@@ -19,14 +19,18 @@ class LifeAdjustmentButtons extends ConsumerWidget {
       ref.read(gameProvider.notifier).adjustLife(playerId, delta);
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _AdjustButton(label: '+5', onTap: () => adjust(5)),
-        _AdjustButton(label: '+1', onTap: () => adjust(1)),
-        _AdjustButton(label: '-1', onTap: () => adjust(-1)),
-        _AdjustButton(label: '-5', onTap: () => adjust(-5)),
-      ],
+    return Opacity(
+      opacity: isEliminated ? 0.35 : 1.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _AdjustButton(label: '+5', onTap: () => adjust(5)),
+          _AdjustButton(label: '+1', onTap: () => adjust(1)),
+          const SizedBox(width: 12),
+          _AdjustButton(label: '-1', onTap: () => adjust(-1)),
+          _AdjustButton(label: '-5', onTap: () => adjust(-5)),
+        ],
+      ),
     );
   }
 }
@@ -40,9 +44,10 @@ class _AdjustButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPositive = label.startsWith('+');
+    final isFive = label.endsWith('5');
     return SizedBox(
       width: 56,
-      height: 44,
+      height: 48,
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
@@ -57,7 +62,10 @@ class _AdjustButton extends StatelessWidget {
         ),
         child: Text(
           label,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: isFive ? 12 : 14,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

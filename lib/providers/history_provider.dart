@@ -38,3 +38,15 @@ final historyProvider =
 final appStatsProvider = Provider<AppStats>(
   (ref) => AppStats.fromRecords(ref.watch(historyProvider)),
 );
+
+final previousDeckNamesProvider = Provider<List<String>>((ref) {
+  final records = ref.watch(historyProvider);
+  final seen = <String>{};
+  for (final record in records) {
+    for (final player in record.players) {
+      final name = player.deckName.trim();
+      if (name.isNotEmpty && name != 'Unknown Deck') seen.add(name);
+    }
+  }
+  return seen.toList()..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
+});

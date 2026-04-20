@@ -15,7 +15,7 @@ class StatsScreen extends ConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(
-            'Stats  ·  ${stats.totalGamesPlayed} game${stats.totalGamesPlayed == 1 ? '' : 's'}',
+            'Stats — ${stats.totalGamesPlayed} game${stats.totalGamesPlayed == 1 ? '' : 's'}',
           ),
           bottom: const TabBar(
             tabs: [
@@ -42,6 +42,7 @@ class StatsScreen extends ConsumerWidget {
                       gamesPlayed: s.gamesPlayed))
                   .toList(),
               emptyMessage: 'No games played yet.',
+              totalGames: stats.totalGamesPlayed,
             ),
             _LeaderboardTab(
               items: stats.deckStats
@@ -51,6 +52,7 @@ class StatsScreen extends ConsumerWidget {
                       gamesPlayed: s.gamesPlayed))
                   .toList(),
               emptyMessage: 'No deck data yet.',
+              totalGames: stats.totalGamesPlayed,
             ),
           ],
         ),
@@ -94,9 +96,13 @@ class _LeaderItem {
 class _LeaderboardTab extends StatelessWidget {
   final List<_LeaderItem> items;
   final String emptyMessage;
+  final int totalGames;
 
-  const _LeaderboardTab(
-      {required this.items, required this.emptyMessage});
+  const _LeaderboardTab({
+    required this.items,
+    required this.emptyMessage,
+    required this.totalGames,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -108,13 +114,28 @@ class _LeaderboardTab extends StatelessWidget {
     }
     return ListView.builder(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      itemCount: items.length,
-      itemBuilder: (_, i) => WinRecordRow(
-        name: items[i].name,
-        wins: items[i].wins,
-        gamesPlayed: items[i].gamesPlayed,
-        rank: i + 1,
-      ),
+      itemCount: items.length + 1,
+      itemBuilder: (_, i) {
+        if (i == 0) {
+          return Card(
+            margin: const EdgeInsets.fromLTRB(12, 8, 12, 4),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text(
+                '${items.length} ${items.length == 1 ? 'entry' : 'entries'} — $totalGames game${totalGames == 1 ? '' : 's'}',
+                style: const TextStyle(color: Colors.white54, fontSize: 13),
+              ),
+            ),
+          );
+        }
+        final item = items[i - 1];
+        return WinRecordRow(
+          name: item.name,
+          wins: item.wins,
+          gamesPlayed: item.gamesPlayed,
+          rank: i,
+        );
+      },
     );
   }
 }

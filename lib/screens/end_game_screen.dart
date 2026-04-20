@@ -39,37 +39,53 @@ class _EndGameScreenState extends ConsumerState<EndGameScreen> {
       body: Column(
         children: [
           const Padding(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
             child: Text(
               'Select the winner',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
+          const Divider(height: 1, color: Colors.white12),
           Expanded(
             child: ListView.builder(
               itemCount: players.length,
               itemBuilder: (_, i) {
                 final p = players[i];
-                return RadioListTile<String>(
-                  value: p.id,
-                  groupValue: _selectedWinnerId,
-                  onChanged: (val) => setState(() => _selectedWinnerId = val),
-                  title: Text(p.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text(
-                    p.deckName,
-                    style: const TextStyle(fontStyle: FontStyle.italic),
+                return Container(
+                  decoration: BoxDecoration(
+                    color: _selectedWinnerId == p.id
+                        ? Colors.green.withOpacity(0.12)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  secondary: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${p.lifeTotal}',
+                  child: RadioListTile<String>(
+                    value: p.id,
+                    groupValue: _selectedWinnerId,
+                    onChanged: (val) =>
+                        setState(() => _selectedWinnerId = val),
+                    title: Text(p.name,
+                        style:
+                            const TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text(
+                      p.deckName,
+                      style: const TextStyle(fontStyle: FontStyle.italic),
+                    ),
+                    secondary: Chip(
+                      label: Text(
+                        '${p.lifeTotal} HP',
                         style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 12, color: Colors.white),
                       ),
-                      const Text('life', style: TextStyle(fontSize: 10)),
-                    ],
+                      backgroundColor: p.lifeTotal > 0
+                          ? Colors.green.shade800
+                          : Colors.red.shade800,
+                      padding: EdgeInsets.zero,
+                      visualDensity: VisualDensity.compact,
+                    ),
                   ),
                 );
               },
@@ -81,13 +97,17 @@ class _EndGameScreenState extends ConsumerState<EndGameScreen> {
               width: double.infinity,
               height: 52,
               child: ElevatedButton.icon(
-                onPressed: _selectedWinnerId == null ? null : _confirmAndSave,
+                onPressed:
+                    _selectedWinnerId == null ? null : _confirmAndSave,
                 icon: const Icon(Icons.save),
                 label: const Text('Confirm & Save Game',
                     style: TextStyle(fontSize: 16)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green.shade800,
                   foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
             ),
@@ -100,8 +120,7 @@ class _EndGameScreenState extends ConsumerState<EndGameScreen> {
   Future<void> _confirmAndSave() async {
     final game = ref.read(gameProvider);
     final winnerId = _selectedWinnerId!;
-    final winner =
-        game.players.firstWhere((p) => p.id == winnerId);
+    final winner = game.players.firstWhere((p) => p.id == winnerId);
 
     final record = GameRecord(
       id: _uuid.v4(),

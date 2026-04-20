@@ -67,7 +67,7 @@ class WinRecordRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: winRate,
-                minHeight: 6,
+                minHeight: 8,
                 backgroundColor: Colors.white12,
                 valueColor: AlwaysStoppedAnimation<Color>(
                   winRate >= 0.5 ? Colors.green.shade600 : Colors.blueGrey,

@@ -18,9 +18,9 @@ class PlayerTile extends ConsumerWidget {
     final isCommander = gameState.format == AppConstants.formatCommander;
 
     Color lifeColor;
-    if (player.lifeTotal > 10) {
+    if (player.lifeTotal > 15) {
       lifeColor = Colors.green.shade400;
-    } else if (player.lifeTotal > 4) {
+    } else if (player.lifeTotal > 5) {
       lifeColor = Colors.amber.shade400;
     } else {
       lifeColor = Colors.red.shade400;
@@ -54,9 +54,9 @@ class PlayerTile extends ConsumerWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     fontStyle: FontStyle.italic,
-                    color: Colors.white60,
+                    color: Colors.white54,
                   ),
                 ),
                 Text(
@@ -78,7 +78,7 @@ class PlayerTile extends ConsumerWidget {
                     icon: const Icon(Icons.shield_outlined, size: 16),
                     label: const Text('Cmd Damage', style: TextStyle(fontSize: 12)),
                     style: TextButton.styleFrom(
-                      foregroundColor: Colors.white54,
+                      foregroundColor: Colors.blueGrey.shade300,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 4),
                     ),
@@ -148,7 +148,7 @@ class _EliminatedOverlay extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.close, size: 44, color: Colors.red),
+            const Icon(Icons.close, size: 48, color: Colors.red),
             Text(
               reason,
               textAlign: TextAlign.center,
@@ -156,6 +156,11 @@ class _EliminatedOverlay extends StatelessWidget {
                   color: Colors.red,
                   fontSize: 14,
                   fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              player.name,
+              style: const TextStyle(color: Colors.white54, fontSize: 11),
             ),
           ],
         ),
